@@ -115,7 +115,7 @@ router.post("/:user/favorite", auth.required, function(req, res, next) {
           { new: true }
         )
           .then(function(resp) {
-            res.json({ resp: user.toAuthJSON() });
+            res.json({ resp: resp.toAuthJSON() });
           })
           .catch(next);
       }
