@@ -16,6 +16,9 @@ const UserSchema = new mongoose.Schema(
     },
     hash: String,
     salt: String,
+    firstname: String,
+    lastname: String,
+    postcode: String,
     properties: Array,
     searches: Array
   },
@@ -49,7 +52,7 @@ UserSchema.methods.generateJWT = function() {
   return jwt.sign(
     {
       id: this._id,
-      username: this.username,
+      email: this.email,
       exp: parseInt(exp.getTime() / 1000)
     },
     secret
@@ -62,6 +65,9 @@ UserSchema.methods.toAuthJSON = function() {
     _id: this._id,
     email: this.email,
     token: this.generateJWT(),
+    firstname: this.firstname,
+    lastname: this.lastname,
+    postcode: this.postcode,
     properties: this.properties,
     searches: this.searches
   };

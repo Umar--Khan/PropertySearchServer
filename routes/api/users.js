@@ -9,6 +9,9 @@ router.post("/users", function(req, res, next) {
   const user = new User();
 
   user.email = req.body.user.email;
+  user.postcode = req.body.user.postcode;
+  user.firstname = req.body.user.firstname;
+  user.lastname = req.body.user.lastname;
   user.setPassword(req.body.user.password);
 
   user
@@ -100,11 +103,8 @@ router.post("/:user/favorite", auth.required, function(req, res, next) {
   return User.findOne({ _id: userId, "properties.id": property.id }).then(
     resp => {
       if (resp) {
-        console.log(resp);
         res.json({ user: resp.toAuthJSON() });
       } else {
-        console.log("false");
-
         User.findOneAndUpdate(
           { _id: userId },
           {
@@ -115,7 +115,7 @@ router.post("/:user/favorite", auth.required, function(req, res, next) {
           { new: true }
         )
           .then(function(resp) {
-            res.json({ resp: resp.toAuthJSON() });
+            res.json({ user: resp.toAuthJSON() });
           })
           .catch(next);
       }
