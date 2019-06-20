@@ -140,6 +140,49 @@ router.delete("/:user/favorite", auth.required, function(req, res, next) {
   });
 });
 
+// Saving a Property
+router.post("/:user/search", auth.required, function(req, res, next) {
+  const search = req.body.search;
+  const userId = req.payload.id;
+
+  return User.findOne({ _id: userId, "search.id": search.id }).then(resp => {
+    if (resp) {
+      res.json({ user: resp.toAuthJSON() });
+    } else {
+      User.findOneAndUpdate(
+        { _id: userId },
+        {
+          $addToSet: {
+            searches: search
+          }
+        },
+        { new: true }
+      )
+        .then(function(resp) {
+          res.json({ user: resp.toAuthJSON() });
+        })
+        .catch(next);
+    }
+  });
+});
+
+// Deleting a Search
+router.delete("/:user/search", auth.required, function(req, res, next) {
+  const search = req.body.search;
+
+  User.findById(req.payload.id).then(function(user) {
+    if (!user) {
+      return res.sendStatus(401);
+    }
+    return user
+      .deleteSearch(search)
+      .then(function() {
+        return res.json({ user: user.toAuthJSON() });
+      })
+      .catch(next);
+  });
+});
+
 //! Clean DB
 // User.collection.drop();
 

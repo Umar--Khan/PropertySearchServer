@@ -79,4 +79,10 @@ UserSchema.methods.unfavoriteProperty = function(property) {
   return this.save();
 };
 
+//Delete Searches
+UserSchema.methods.deleteSearch = function(search) {
+  this.searches.remove(search);
+  return this.save();
+};
+
 mongoose.model("User", UserSchema);
